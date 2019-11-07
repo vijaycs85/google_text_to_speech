@@ -1,0 +1,7 @@
+type: module
+name: Google Text to Speech
+description: 'Converts Text to Audio File using Google Cloud API'
+package: Google Cloud
+core: 8.x
+
+

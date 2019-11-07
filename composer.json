@@ -1,0 +1,10 @@
+{
+  "name": "drupal/google_text_to_speech",
+  "description": "Converts Text to Audio File using Google Cloud API",
+  "type": "drupal-module",
+  "homepage": "http://drupal.org/project/google_text_to_speech",
+  "require": {
+    "google/cloud-text-to-speech": "^0.116.0"
+  }
+  
+}
