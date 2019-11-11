@@ -1,0 +1,4 @@
+google_text_to_speech.admin: # The first plugin ID
+  title: 'Google Text to Speech'
+  route_name: google_text_to_speech.admin
+  base_route: system.admin_config_system

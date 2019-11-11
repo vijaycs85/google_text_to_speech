@@ -1,0 +1,6 @@
+google_text_to_speech.admin:
+  title: 'Google Text to Speech'
+  description: 'Configuration for Google text to speech'
+  route_name: google_text_to_speech.admin
+  parent: 'system.admin_config_system'  
+  weight: 1

@@ -1,0 +1,5 @@
+services:
+  google_text_to_speech.manager:
+    class: Drupal\google_text_to_speech\Service\TextToSpeech
+    arguments: ['@config.factory']
+

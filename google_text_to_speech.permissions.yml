@@ -1,0 +1,4 @@
+google_text_to_speech administration:
+ title: 'Administer Google Text to Speech'
+ description: 'Perform administration of Google Text to Speech'
+ restrict access: false  
