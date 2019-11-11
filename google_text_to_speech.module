@@ -6,6 +6,11 @@
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\paragraphs\ParagraphInterface;
+use \Drupal\file\Entity\File;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\FieldableEntityInterface;
+use Drupal\Core\Entity\Entity\EntityViewDisplay;
 
 /**
  * Implements hook_help().
@@ -30,3 +35,41 @@ function google_text_to_speech_help($route_name, RouteMatchInterface $route_matc
 
   }
 }
+
+/**
+ * Implements hook_entity_type_presave().
+ */
+function google_text_to_speech_paragraph_presave(ParagraphInterface $paragraph) {
+  if (valid_google_text_to_speech_paragraph($paragraph)) {
+
+    $gtts = \Drupal::service('google_text_to_speech.manager');
+  //if(!empty($gtts->entityHasChanged($paragraph))) {
+
+    $text = $paragraph->get('field_gtts_text')->getValue();
+    $voice = $paragraph->get('field_gtts_voice')->getValue();
+    $language = $paragraph->get('field_gtts_language')->getValue();
+
+    $config = \Drupal::config('google_text_to_speech.settings');
+    $encode = $config->get('google_text_to_speech_encoding');
+    $encoding = [1 => 'mp3', 3 => 'wav', 2 => 'mp3'];
+
+    foreach ($text as $key => $value) {
+      $parameters[] = ["text" => $value['value'],"language_code"  => $language[$key]['value'],"encoding" => $encode,"voice" => $voice[$key]['value']];
+    }
+    
+  foreach ($parameters as $pkey => $pvalue) {
+     $files[$pkey] = $gtts->generateFile($pvalue);
+  }
+    $paragraph->set('field_gtts_audio', $files);
+   //}
+  }
+}
+
+
+
+   function valid_google_text_to_speech_paragraph($paragraph) {
+    $config = \Drupal::config('google_text_to_speech.settings');
+    $string = $config->get('google_text_to_speech_paragraphs');
+    $paragraphs = explode(',', $string);
+    return in_array($paragraph->bundle(), $paragraphs) || $paragraph->bundle() == 'google_text_to_speech'; 
+  }

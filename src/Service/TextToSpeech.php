@@ -14,6 +14,11 @@ use Google\Cloud\TextToSpeech\V1\TextToSpeechClient;
 use Google\Cloud\TextToSpeech\V1\VoiceSelectionParams;
 use Google\Cloud\TextToSpeech\V1\SsmlVoiceGender;
 use \Drupal\Core\Config\ConfigFactoryInterface;
+use \Drupal\Core\Entity\EntityInterface;
+use \Drupal\Core\Entity\FieldableEntityInterface;
+use \Drupal\Core\Entity\Entity\EntityViewDisplay;
+use \Drupal\paragraphs\ParagraphInterface;
+use \Drupal\file\Entity\File;
 
 /**
  * Contains the TextToSpeech.
@@ -68,4 +73,70 @@ public function __construct(ConfigFactoryInterface $config_factory) {
     flush();
     echo($audio);
  }
+
+
+  /**
+   * Check if entity field content has changed
+   * @param  ParagraphInterface $entity     The entity being saved
+   * @return array                    A list of changed field names
+   */
+  public function entityHasChanged(ParagraphInterface $entity) {
+    $changed_fields = [];
+    if (!$entity->original) {
+      return $changed_fields;
+    }
+    $field_names = $this->getFieldList($entity->bundle(), $entity->getEntityTypeId());
+    foreach($field_names as $key => $field_name) {
+      if($entity->hasField($field_name) && $field_name != 'field_comments' && !$entity->get($field_name)->equals($entity->original->get($field_name))){
+        $changed_fields[] = $field_name;
+        // $entity->get($field_name)->getValue();
+      }
+    }
+     return $changed_fields;
+  }
+
+
+  /**
+   * Get list of field names from bundle
+   * @param  string $bundle Bundle name
+   * @return array         Array of field names
+   */
+  public function getFieldList($bundle, $entity_type_id) {
+    $fields_by_weight = [];
+    $bundle_fields = \Drupal::entityTypeManager()
+      ->getStorage('entity_view_display')
+      ->load($entity_type_id . '.' . $bundle . '.' . 'default')
+      ->getComponents();
+
+    foreach ($bundle_fields as $name => $options) {
+      $fields_by_weight[] = $name;
+    }
+    return $fields_by_weight;
+  }
+
+  public function generateFile($parameters) {
+   $encoding = [1 => 'mp3', 3 => 'wav', 2 => 'mp3'];
+   $content = $this->getAudio($parameters);
+    $fileExt = $encoding[$parameters['encoding']];
+    $month = date('m');
+    $year = date('Y');
+    $folder = $year."-".$month;
+    $user_id = \Drupal::currentUser()->id();
+    $path = 'gtts/'.$folder."/GTTS_".$user_id."_".time().".".$fileExt;
+
+    $file = File::create([
+    'uid' => 1,
+    'filename' => basename($path),
+    'uri' => 'public://'.$path,
+    'status' => 1,
+    ]);
+    $file->save();
+
+    $dir = dirname($file->getFileUri());
+    if (!file_exists($dir)) {
+      mkdir($dir, 0770, TRUE);
+    }
+    file_put_contents($file->getFileUri(), $content);
+    return $file;
+  }
 }

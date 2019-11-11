@@ -6,4 +6,7 @@ core: 8.x
 
 configure: google_text_to_speech.admin
 
+dependencies:
+  - paragraphs
+
 

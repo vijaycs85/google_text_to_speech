@@ -81,7 +81,7 @@ class TextToSpeechSettingsForm extends ConfigFormBase {
         '#options' =>  [1 => 'Linear 16', 3 => 'WAVNET', 2 => 'Mp3'],
         '#required' => true,
       ];
-
+      $form['google_text_to_speech_paragraphs'] = ["#type" => 'textarea', "#title" => t('Allowed paragraph list'), "#description" => 'Enter the list of paragraphs that has to be considered as google text to speech paragraph, enter  the paragraphs comma seperated values (eg) google_text_to_speech, additonal_paragraph, one_more_custom', "#default_value" => $config->get('google_text_to_speech_paragraphs')];
       $form['test'] = array(
             '#type' => 'details',
             '#title' => $this->t('Test the Above Config'),
@@ -116,6 +116,7 @@ class TextToSpeechSettingsForm extends ConfigFormBase {
       ->set('google_text_to_speech_language', $form_state->getValue('google_text_to_speech_language'))
       ->set('google_text_to_speech_voice', $form_state->getValue('google_text_to_speech_voice'))
       ->set('google_text_to_speech_encoding', $form_state->getValue('google_text_to_speech_encoding'))
+      ->set('google_text_to_speech_paragraphs', $form_state->getValue('google_text_to_speech_paragraphs'))
       ->save(); 
     parent::submitForm($form, $form_state);
   }

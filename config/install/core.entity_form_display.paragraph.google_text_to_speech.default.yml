@@ -1,0 +1,39 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.paragraph.google_text_to_speech.field_gtts_audio
+    - field.field.paragraph.google_text_to_speech.field_gtts_language
+    - field.field.paragraph.google_text_to_speech.field_gtts_text
+    - field.field.paragraph.google_text_to_speech.field_gtts_voice
+    - paragraphs.paragraphs_type.google_text_to_speech
+id: paragraph.google_text_to_speech.default
+targetEntityType: paragraph
+bundle: google_text_to_speech
+mode: default
+content:
+  field_gtts_language:
+    weight: 1
+    settings: {  }
+    third_party_settings: {  }
+    type: options_select
+    region: content
+  field_gtts_text:
+    weight: 0
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textarea
+    region: content
+  field_gtts_voice:
+    weight: 2
+    settings: {  }
+    third_party_settings: {  }
+    type: options_select
+    region: content
+hidden:
+  created: true
+  field_gtts_audio: true
+  status: true
+  uid: true
