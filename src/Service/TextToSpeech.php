@@ -19,7 +19,7 @@ use \Drupal\Core\Entity\FieldableEntityInterface;
 use \Drupal\Core\Entity\Entity\EntityViewDisplay;
 use \Drupal\paragraphs\ParagraphInterface;
 use \Drupal\file\Entity\File;
-
+use \Drupal\media\Entity\Media;
 /**
  * Contains the TextToSpeech.
  */
@@ -137,6 +137,21 @@ public function __construct(ConfigFactoryInterface $config_factory) {
       mkdir($dir, 0770, TRUE);
     }
     file_put_contents($file->getFileUri(), $content);
+    $this->saveFiletoMedia($file,$parameters);
     return $file;
+  }
+
+  public function saveFiletoMedia($file, $parameters) {
+    if($this->config->get('google_text_to_speech_media') == TRUE) {
+      $name = substr($parameters['text'],0,60);
+      $media = Media::create([
+        'bundle'           => 'google_text_to_speech',
+        'uid'              => \Drupal::currentUser()->id(),
+        'field_media_audio_file' => [
+          'target_id' => $file->id(),
+        ],
+      ]);
+      $media->setName($name)->setPublished(TRUE)->save();
+    }
   }
 }

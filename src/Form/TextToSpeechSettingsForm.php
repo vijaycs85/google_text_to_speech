@@ -35,6 +35,7 @@ class TextToSpeechSettingsForm extends ConfigFormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config('google_text_to_speech.settings');
 
+
     $form['google_text_to_speech_json_path'] = [
       '#title' => $this->t('Credentials Json path'),
       '#type' => 'textfield',
@@ -43,7 +44,25 @@ class TextToSpeechSettingsForm extends ConfigFormBase {
       '#required' => true,
     ];
 
-    $form['google_text_to_speech_language_list'] = ["#type" => 'textarea', "#title" => t('Allowed language list'), "#description" => 'The possible languages this field can contain. Enter one value per line, in the format key|label that is languagecode|language (eg). en-GB|English (UK). You can get the list of supported languages and voices from  <a target="_blank" href="https://cloud.google.com/text-to-speech/docs/voices"><b>Google Support Docs link</b></a>', "#default_value" => $config->get('google_text_to_speech_language_list'), '#required' => true,];
+      $form['global'] = array(
+            '#type' => 'details',
+            '#title' => $this->t('Global Settings'),
+            '#description' => $this->t('Config Applicable through out the Drupal site'),
+            '#open' => FALSE,
+      );
+
+
+      $form['test'] = array(
+            '#type' => 'details',
+            '#title' => $this->t('Test Google Text to Speech'),
+            '#description' => $this->t('The fields inside test is only to test and download the below audio not through out the Drupal site '),
+            '#open' => FALSE,
+      );
+
+
+
+
+    $form['test']['google_text_to_speech_language_list'] = ["#type" => 'textarea', "#title" => t('Allowed language list'), "#description" => 'The possible languages this field can contain. Enter one value per line, in the format key|label that is languagecode|language (eg). en-GB|English (UK). You can get the list of supported languages and voices from  <a target="_blank" href="https://cloud.google.com/text-to-speech/docs/voices"><b>Google Support Docs link</b></a>', "#default_value" => $config->get('google_text_to_speech_language_list'), '#required' => true,];
 
     if($config->get('google_text_to_speech_json_path') != "" && $config->get('google_text_to_speech_language_list') != "") {
       $list = $config->get('google_text_to_speech_language_list'); 
@@ -54,7 +73,7 @@ class TextToSpeechSettingsForm extends ConfigFormBase {
           list($key, $value) = explode('|', $val);
           $languageOption[$key] = $value;
       });
-      $form['google_text_to_speech_language'] = [
+      $form['test']['google_text_to_speech_language'] = [
         '#title' => $this->t('Language'),
         '#type' => 'select',
         '#description' => $this->t("It will generate the audio in selected language for the above text"),
@@ -63,7 +82,7 @@ class TextToSpeechSettingsForm extends ConfigFormBase {
          '#required' => true,
       ];
 
-      $form['google_text_to_speech_voice'] = [
+      $form['test']['google_text_to_speech_voice'] = [
         '#title' => $this->t('Voice Gender'),
         '#type' => 'select',
         '#description' => $this->t("It will generate the audio in the selected voice for the above text"),
@@ -73,7 +92,7 @@ class TextToSpeechSettingsForm extends ConfigFormBase {
         '#required' => true,
       ];
 
-      $form['google_text_to_speech_encoding'] = [
+      $form['global']['google_text_to_speech_encoding'] = [
         '#title' => $this->t('Audio Encoding'),
         '#type' => 'select',
         '#description' => $this->t("It will generate the audio in the selected encoding format"),
@@ -81,13 +100,13 @@ class TextToSpeechSettingsForm extends ConfigFormBase {
         '#options' =>  [1 => 'Linear 16', 3 => 'WAVNET', 2 => 'Mp3'],
         '#required' => true,
       ];
-      $form['google_text_to_speech_paragraphs'] = ["#type" => 'textarea', "#title" => t('Allowed paragraph list'), "#description" => 'Enter the list of paragraphs that has to be considered as google text to speech paragraph, enter  the paragraphs comma seperated values (eg) google_text_to_speech, additonal_paragraph, one_more_custom', "#default_value" => $config->get('google_text_to_speech_paragraphs')];
-      $form['test'] = array(
-            '#type' => 'details',
-            '#title' => $this->t('Test the Above Config'),
-            '#open' => FALSE,
-      );
-
+      $form['global']['google_text_to_speech_paragraphs'] = ["#type" => 'textarea', "#title" => t('Allowed paragraph list'), "#description" => 'Enter the list of paragraphs that has to be considered as google text to speech paragraph, enter  the paragraphs comma seperated values (eg) google_text_to_speech, additonal_paragraph, one_more_custom', "#default_value" => $config->get('google_text_to_speech_paragraphs')];
+      $form['global']['google_text_to_speech_media'] = array(
+        '#type' => 'checkbox',
+        '#title' => $this->t('Create Media entity '),
+        '#description' => $this->t("Media entity will be created with the generated Audio file's  reference so that the generated audio can be resued in some other place as media entity. <b>NOTE:</b> The created media enity doesn't have any action or relation to Google text to speech feature like generation of Audio when changing text or voice or language it is just an reusable Audio File"),
+         '#default_value' => $config->get('google_text_to_speech_media'),
+    );
       $form['test']['google_text_to_speech_text'] = [
         '#title' => $this->t('Add Sample Text'),
         '#type' => 'textarea',
@@ -117,7 +136,9 @@ class TextToSpeechSettingsForm extends ConfigFormBase {
       ->set('google_text_to_speech_voice', $form_state->getValue('google_text_to_speech_voice'))
       ->set('google_text_to_speech_encoding', $form_state->getValue('google_text_to_speech_encoding'))
       ->set('google_text_to_speech_paragraphs', $form_state->getValue('google_text_to_speech_paragraphs'))
+      ->set('google_text_to_speech_media', $form_state->getValue('google_text_to_speech_media'))
       ->save(); 
+      
     parent::submitForm($form, $form_state);
   }
 
