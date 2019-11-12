@@ -39,40 +39,22 @@ function google_text_to_speech_help($route_name, RouteMatchInterface $route_matc
 /**
  * Implements hook_entity_type_presave().
  */
-function google_text_to_speech_media_presave(MediaInterface $media) {
-  if (valid_google_text_to_speech_media($media)) {
-
-    $gtts = \Drupal::service('google_text_to_speech.manager');
-  if(!empty($gtts->entityHasChanged($media)) || $media->isNew()) {
-
-    $text = $media->get('field_gtts_text')->getValue();
-    $voice = $media->get('field_gtts_voice')->getValue();
-    $language = $media->get('field_gtts_language')->getValue();
-
-
-    $config = \Drupal::config('google_text_to_speech.settings');
-    $encode = $config->get('google_text_to_speech_encoding');
-    $encoding = [1 => 'mp3', 3 => 'wav', 2 => 'mp3'];
-
-    foreach ($text as $key => $value) {
-
-      $parameters[$key] = ["text" => $value['value'],"language_code"  => $language[$key]['value'],"encoding" => $encode,"voice" => $voice[$key]['value']];
-     
-    }
-    
-  foreach ($parameters as $pkey => $pvalue) {
-
-      $file = $gtts->generateFile($pvalue);
-
-     $files[$pkey] = [
+  function google_text_to_speech_media_presave(MediaInterface $media) {
+    if (valid_google_text_to_speech_media($media)) {
+      $gtts = \Drupal::service('google_text_to_speech.manager');
+      if(!empty($gtts->entityHasChanged($media)) || $media->isNew()) {
+        $parameters = $gtts->getParametersFromMedia($media);
+        foreach ($parameters as $pkey => $pvalue) {
+          $file = $gtts->generateFile($pvalue);
+          $files[$pkey] = [
           'target_id' => $file->id(),
           'display' => 1,
-     ];
+          ];
+        }
+        $media->set('field_media_audio_file', $files);
+      }
     }
-    $media->set('field_media_audio_file', $files);
-   }
   }
-}
 
 
 

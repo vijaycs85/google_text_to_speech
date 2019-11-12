@@ -115,8 +115,14 @@ public function __construct(ConfigFactoryInterface $config_factory) {
   }
 
   public function generateFile($parameters) {
-   $encoding = [1 => 'mp3', 3 => 'wav', 2 => 'mp3'];
    $content = $this->getAudio($parameters);
+   $file = $this->getFile($parameters);
+   $this->uploadFile($file, $content); 
+   return $file;
+  }
+
+  public function getFile($parameters, $uri_schema = "public://") {
+    $encoding = [1 => 'mp3', 3 => 'wav', 2 => 'mp3'];
     $fileExt = $encoding[$parameters['encoding']];
     $month = date('m');
     $year = date('Y');
@@ -124,35 +130,32 @@ public function __construct(ConfigFactoryInterface $config_factory) {
     $random = rand(10, 999);
     $user_id = \Drupal::currentUser()->id();
     $path = 'gtts/'.$folder."/GTTS_".$random."_".$user_id."_".time().".".$fileExt;
-
     $file = File::create([
     'uid' => 1,
     'filename' => basename($path),
-    'uri' => 'public://'.$path,
+    'uri' => $uri_schema.$path,
     'status' => 1,
     ]);
     $file->save();
+    return $file;
+  }
 
+  public function uploadFile($file, $content) {
     $dir = dirname($file->getFileUri());
     if (!file_exists($dir)) {
       mkdir($dir, 0770, TRUE);
     }
     file_put_contents($file->getFileUri(), $content);
-    //$this->saveFiletoMedia($file,$parameters);
-    return $file;
   }
-
- /* public function saveFiletoMedia($file, $parameters) {
-    if($this->config->get('google_text_to_speech_media') == TRUE) {
-      $name = substr($parameters['text'],0,60);
-      $media = Media::create([
-        'bundle'           => 'google_text_to_speech',
-        'uid'              => \Drupal::currentUser()->id(),
-        'field_media_audio_file' => [
-          'target_id' => $file->id(),
-        ],
-      ]);
-      $media->setName($name)->setPublished(TRUE)->save();
+ 
+  public function getParametersFromMedia($media) {
+    $text = $media->get('field_gtts_text')->getValue();
+    $voice = $media->get('field_gtts_voice')->getValue();
+    $language = $media->get('field_gtts_language')->getValue();
+    $encode = $this->config->get('google_text_to_speech_encoding');
+    foreach ($text as $key => $value) {
+      $parameters[$key] = ["text" => $value['value'],"language_code"  => $language[$key]['value'],"encoding" => $encode,"voice" => $voice[$key]['value']];
     }
-  }*/
+    return $parameters;
+  }
 }
