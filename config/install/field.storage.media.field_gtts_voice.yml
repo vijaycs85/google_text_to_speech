@@ -2,23 +2,23 @@ langcode: en
 status: true
 dependencies:
   module:
+    - media
     - options
-    - paragraphs
-id: paragraph.field_gtts_language
-field_name: field_gtts_language
-entity_type: paragraph
-type: list_string
+id: media.field_gtts_voice
+field_name: field_gtts_voice
+entity_type: media
+type: list_integer
 settings:
   allowed_values:
     -
-      value: en-US
-      label: 'English (US)'
+      value: 1
+      label: Male
     -
-      value: en-GB
-      label: 'English (UK)'
+      value: 2
+      label: Female
     -
-      value: en-IN
-      label: 'English (India)'
+      value: 3
+      label: Neutral
   allowed_values_function: ''
 module: options
 locked: false

@@ -2,10 +2,10 @@ langcode: en
 status: true
 dependencies:
   module:
-    - paragraphs
-id: paragraph.field_gtts_text
+    - media
+id: media.field_gtts_text
 field_name: field_gtts_text
-entity_type: paragraph
+entity_type: media
 type: string_long
 settings:
   case_sensitive: false

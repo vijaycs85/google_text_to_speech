@@ -60,8 +60,6 @@ class TextToSpeechSettingsForm extends ConfigFormBase {
       );
 
 
-
-
     $form['test']['google_text_to_speech_language_list'] = ["#type" => 'textarea', "#title" => t('Allowed language list'), "#description" => 'The possible languages this field can contain. Enter one value per line, in the format key|label that is languagecode|language (eg). en-GB|English (UK). You can get the list of supported languages and voices from  <a target="_blank" href="https://cloud.google.com/text-to-speech/docs/voices"><b>Google Support Docs link</b></a>', "#default_value" => $config->get('google_text_to_speech_language_list'), '#required' => true,];
 
     if($config->get('google_text_to_speech_json_path') != "" && $config->get('google_text_to_speech_language_list') != "") {
@@ -100,13 +98,13 @@ class TextToSpeechSettingsForm extends ConfigFormBase {
         '#options' =>  [1 => 'Linear 16', 3 => 'WAVNET', 2 => 'Mp3'],
         '#required' => true,
       ];
-      $form['global']['google_text_to_speech_paragraphs'] = ["#type" => 'textarea', "#title" => t('Allowed paragraph list'), "#description" => 'Enter the list of paragraphs that has to be considered as google text to speech paragraph, enter  the paragraphs comma seperated values (eg) google_text_to_speech, additonal_paragraph, one_more_custom', "#default_value" => $config->get('google_text_to_speech_paragraphs')];
-      $form['global']['google_text_to_speech_media'] = array(
+      $form['global']['google_text_to_speech_media_type'] = ["#type" => 'textarea', "#title" => t('Allowed media Types list'), "#description" => 'Enter the list of media type that has to be considered as google text to speech media type, enter  the media types in  comma seperated values (eg) google_text_to_speech, additonal_media, one_more_custom', "#default_value" => $config->get('google_text_to_speech_media_type')];
+    /*  $form['global']['google_text_to_speech_media'] = array(
         '#type' => 'checkbox',
         '#title' => $this->t('Create Media entity '),
         '#description' => $this->t("Media entity will be created with the generated Audio file's  reference so that the generated audio can be resued in some other place as media entity. <b>NOTE:</b> The created media enity doesn't have any action or relation to Google text to speech feature like generation of Audio when changing text or voice or language it is just an reusable Audio File"),
          '#default_value' => $config->get('google_text_to_speech_media'),
-    );
+    );*/
       $form['test']['google_text_to_speech_text'] = [
         '#title' => $this->t('Add Sample Text'),
         '#type' => 'textarea',
@@ -135,8 +133,8 @@ class TextToSpeechSettingsForm extends ConfigFormBase {
       ->set('google_text_to_speech_language', $form_state->getValue('google_text_to_speech_language'))
       ->set('google_text_to_speech_voice', $form_state->getValue('google_text_to_speech_voice'))
       ->set('google_text_to_speech_encoding', $form_state->getValue('google_text_to_speech_encoding'))
-      ->set('google_text_to_speech_paragraphs', $form_state->getValue('google_text_to_speech_paragraphs'))
-      ->set('google_text_to_speech_media', $form_state->getValue('google_text_to_speech_media'))
+      ->set('google_text_to_speech_media_type', $form_state->getValue('google_text_to_speech_media_type'))
+      /*->set('google_text_to_speech_media', $form_state->getValue('google_text_to_speech_media'))*/
       ->save(); 
       
     parent::submitForm($form, $form_state);

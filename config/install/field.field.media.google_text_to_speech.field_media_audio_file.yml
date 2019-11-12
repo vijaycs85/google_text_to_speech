@@ -2,18 +2,18 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.paragraph.field_gtts_audio
-    - paragraphs.paragraphs_type.google_text_to_speech
+    - field.storage.media.field_media_audio_file
+    - media.type.google_text_to_speech
   module:
     - file
-id: paragraph.google_text_to_speech.field_gtts_audio
-field_name: field_gtts_audio
-entity_type: paragraph
+id: media.google_text_to_speech.field_media_audio_file
+field_name: field_media_audio_file
+entity_type: media
 bundle: google_text_to_speech
-label: Audio
+label: 'Audio file'
 description: ''
 required: false
-translatable: false
+translatable: true
 default_value: {  }
 default_value_callback: ''
 settings:

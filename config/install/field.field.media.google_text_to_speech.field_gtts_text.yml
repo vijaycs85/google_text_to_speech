@@ -2,15 +2,15 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.paragraph.field_gtts_text
-    - paragraphs.paragraphs_type.google_text_to_speech
-id: paragraph.google_text_to_speech.field_gtts_text
+    - field.storage.media.field_gtts_text
+    - media.type.google_text_to_speech
+id: media.google_text_to_speech.field_gtts_text
 field_name: field_gtts_text
-entity_type: paragraph
+entity_type: media
 bundle: google_text_to_speech
 label: Text
 description: ''
-required: false
+required: true
 translatable: false
 default_value: {  }
 default_value_callback: ''

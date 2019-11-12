@@ -1,0 +1,29 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.media.media_library
+    - field.field.media.google_text_to_speech.field_media_audio_file
+    - image.style.medium
+    - media.type.google_text_to_speech
+  module:
+    - image
+id: media.google_text_to_speech.media_library
+targetEntityType: media
+bundle: google_text_to_speech
+mode: media_library
+content:
+  thumbnail:
+    type: image
+    label: hidden
+    settings:
+      image_style: medium
+      image_link: ''
+    weight: 0
+    third_party_settings: {  }
+    region: content
+hidden:
+  created: true
+  field_media_audio_file: true
+  name: true
+  uid: true

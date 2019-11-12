@@ -1,8 +1,0 @@
-langcode: en
-status: true
-dependencies: {  }
-id: google_text_to_speech
-label: 'Google Text To Speech'
-icon_uuid: null
-description: ''
-behavior_plugins: {  }

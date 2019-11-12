@@ -17,7 +17,7 @@ use \Drupal\Core\Config\ConfigFactoryInterface;
 use \Drupal\Core\Entity\EntityInterface;
 use \Drupal\Core\Entity\FieldableEntityInterface;
 use \Drupal\Core\Entity\Entity\EntityViewDisplay;
-use \Drupal\paragraphs\ParagraphInterface;
+use \Drupal\media\MediaInterface;
 use \Drupal\file\Entity\File;
 use \Drupal\media\Entity\Media;
 /**
@@ -80,7 +80,7 @@ public function __construct(ConfigFactoryInterface $config_factory) {
    * @param  ParagraphInterface $entity     The entity being saved
    * @return array                    A list of changed field names
    */
-  public function entityHasChanged(ParagraphInterface $entity) {
+  public function entityHasChanged(MediaInterface $entity) {
     $changed_fields = [];
     if (!$entity->original) {
       return $changed_fields;
@@ -121,8 +121,9 @@ public function __construct(ConfigFactoryInterface $config_factory) {
     $month = date('m');
     $year = date('Y');
     $folder = $year."-".$month;
+    $random = rand(10, 999);
     $user_id = \Drupal::currentUser()->id();
-    $path = 'gtts/'.$folder."/GTTS_".$user_id."_".time().".".$fileExt;
+    $path = 'gtts/'.$folder."/GTTS_".$random."_".$user_id."_".time().".".$fileExt;
 
     $file = File::create([
     'uid' => 1,
@@ -137,11 +138,11 @@ public function __construct(ConfigFactoryInterface $config_factory) {
       mkdir($dir, 0770, TRUE);
     }
     file_put_contents($file->getFileUri(), $content);
-    $this->saveFiletoMedia($file,$parameters);
+    //$this->saveFiletoMedia($file,$parameters);
     return $file;
   }
 
-  public function saveFiletoMedia($file, $parameters) {
+ /* public function saveFiletoMedia($file, $parameters) {
     if($this->config->get('google_text_to_speech_media') == TRUE) {
       $name = substr($parameters['text'],0,60);
       $media = Media::create([
@@ -153,5 +154,5 @@ public function __construct(ConfigFactoryInterface $config_factory) {
       ]);
       $media->setName($name)->setPublished(TRUE)->save();
     }
-  }
+  }*/
 }

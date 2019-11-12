@@ -2,17 +2,17 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.paragraph.field_gtts_voice
-    - paragraphs.paragraphs_type.google_text_to_speech
+    - field.storage.media.field_gtts_voice
+    - media.type.google_text_to_speech
   module:
     - options
-id: paragraph.google_text_to_speech.field_gtts_voice
+id: media.google_text_to_speech.field_gtts_voice
 field_name: field_gtts_voice
-entity_type: paragraph
+entity_type: media
 bundle: google_text_to_speech
 label: Voice
 description: ''
-required: false
+required: true
 translatable: false
 default_value: {  }
 default_value_callback: ''

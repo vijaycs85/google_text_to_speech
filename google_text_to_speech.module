@@ -6,7 +6,7 @@
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
-use Drupal\paragraphs\ParagraphInterface;
+use \Drupal\media\MediaInterface;
 use \Drupal\file\Entity\File;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
@@ -39,37 +39,46 @@ function google_text_to_speech_help($route_name, RouteMatchInterface $route_matc
 /**
  * Implements hook_entity_type_presave().
  */
-function google_text_to_speech_paragraph_presave(ParagraphInterface $paragraph) {
-  if (valid_google_text_to_speech_paragraph($paragraph)) {
+function google_text_to_speech_media_presave(MediaInterface $media) {
+  if (valid_google_text_to_speech_media($media)) {
 
     $gtts = \Drupal::service('google_text_to_speech.manager');
-  //if(!empty($gtts->entityHasChanged($paragraph))) {
+  if(!empty($gtts->entityHasChanged($media)) || $media->isNew()) {
 
-    $text = $paragraph->get('field_gtts_text')->getValue();
-    $voice = $paragraph->get('field_gtts_voice')->getValue();
-    $language = $paragraph->get('field_gtts_language')->getValue();
+    $text = $media->get('field_gtts_text')->getValue();
+    $voice = $media->get('field_gtts_voice')->getValue();
+    $language = $media->get('field_gtts_language')->getValue();
+
 
     $config = \Drupal::config('google_text_to_speech.settings');
     $encode = $config->get('google_text_to_speech_encoding');
     $encoding = [1 => 'mp3', 3 => 'wav', 2 => 'mp3'];
 
     foreach ($text as $key => $value) {
-      $parameters[] = ["text" => $value['value'],"language_code"  => $language[$key]['value'],"encoding" => $encode,"voice" => $voice[$key]['value']];
+
+      $parameters[$key] = ["text" => $value['value'],"language_code"  => $language[$key]['value'],"encoding" => $encode,"voice" => $voice[$key]['value']];
+     
     }
     
   foreach ($parameters as $pkey => $pvalue) {
-     $files[$pkey] = $gtts->generateFile($pvalue);
-  }
-    $paragraph->set('field_gtts_audio', $files);
-   //}
+
+      $file = $gtts->generateFile($pvalue);
+
+     $files[$pkey] = [
+          'target_id' => $file->id(),
+          'display' => 1,
+     ];
+    }
+    $media->set('field_media_audio_file', $files);
+   }
   }
 }
 
 
 
-   function valid_google_text_to_speech_paragraph($paragraph) {
+   function valid_google_text_to_speech_media($media) {
     $config = \Drupal::config('google_text_to_speech.settings');
-    $string = $config->get('google_text_to_speech_paragraphs');
-    $paragraphs = explode(',', $string);
-    return in_array($paragraph->bundle(), $paragraphs) || $paragraph->bundle() == 'google_text_to_speech'; 
+    $string = $config->get('google_text_to_speech_media_type');
+    $medias = explode(',', $string);
+    return in_array($media->bundle(), $medias) || $media->bundle() == 'google_text_to_speech'; 
   }
