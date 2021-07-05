@@ -1,12 +1,10 @@
-type: module
 name: Google Text to Speech
-description: 'Converts Text to Audio File using Google Cloud API'
+description: Converts Text to Audio File using Google Cloud API
+type: module
 package: Google Cloud
-core: 8.x
+core_version_requirement: ^8 || ^9
 
 configure: google_text_to_speech.admin
 
 dependencies:
-  - media
-
-
+  - media:media
