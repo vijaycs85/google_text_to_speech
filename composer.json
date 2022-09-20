@@ -4,7 +4,7 @@
   "type": "drupal-module",
   "homepage": "http://drupal.org/project/google_text_to_speech",
   "require": {
-    "google/cloud-text-to-speech": "master"
+    "google/cloud-text-to-speech": "main"
   }
   
 }
