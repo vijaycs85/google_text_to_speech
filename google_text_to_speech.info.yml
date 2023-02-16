@@ -2,7 +2,7 @@ name: Google Text to Speech
 description: Converts Text to Audio File using Google Cloud API
 type: module
 package: Google Cloud
-core_version_requirement: ^8 || ^9
+core_version_requirement: ^8 || ^9 || ^10
 
 configure: google_text_to_speech.admin
 
